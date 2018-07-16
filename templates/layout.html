@@ -1,16 +1,44 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{% block title %}{% endblock %}</title>
-        <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" type='text/css'>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" type='text/css'>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  </head>
+  <body>
+    <div class="container">
 
-    </head>
-    <body>
-        <div class="container">
-            {% block body %}
-            {% endblock %}
+      {% if "user_id" in session %}
+        <div class="row navbar" >
+          <h3 class="col-lg-6">Welcome, {{ user.name }}</h3>
+          <div class="col-lg-3">
+            <form action="{{ url_for('signout') }}" method='post'>
+              <button type="submit" class="btn btn-secondary" id='signoutbutton'>Sign Out</button>
+            </form>
+          </div>
         </div>
-    </body>
+      {% else %}
+        <div class="row navbar">
+          <h1 class="col-lg-6">Books App</h1>
+          <div class="col-lg-3">
+            <form action="{{ url_for('signin') }}" method='post'>
+              <div class="form-group">
+                <input type="text" class="form-control form-control-sm" name="username" placeholder="Username">
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control form-control-sm" name="password" placeholder="Password">
+              </div>
+              <input type="checkbox" name="remeberme" value='remeberme'>
+              <label for="remeberme">Remeber me</label>
+              <button type="submit" class="btn btn-secondary" id='signinbutton'>Sign In</button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+      {% block body %}
+      {% endblock %}
+    </div>
+  </body>
 </html>

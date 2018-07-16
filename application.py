@@ -29,7 +29,7 @@ db.init_app(app)
 def index():
     if ("user_id" in session):
         user = User.query.get(session["user_id"])
-        return render_template("user.html", name=user.name)
+        return render_template("user.html", user=user)
     return render_template("index.html")
 
 @app.route("/signup", methods=["POST"])
@@ -56,16 +56,22 @@ def signin():
 
     username = request.form.get("username")
     password = request.form.get("password")
-    user = User.query.filter_by(username=username).one()
+    users = User.query.filter_by(username=username).all()
 
-    if (user):
+    if (users):
+        user = users[0]
         if (user.password == password):
             session["user_id"] = user.id
-            return render_template("user.html", name= user.name)
+            return render_template("user.html", user=user)
         else:
             return render_template("error.html", message= "Authentication Error Invalid Password")
     else:
         return render_template("error.html", message= "User not registered")
+
+@app.route("/signout", methods=["POST"])
+def signout():
+    del session["user_id"]
+    return render_template("index.html")
 
 @app.route("/books/<int:book_id>")
 def book(book_id):
@@ -76,10 +82,28 @@ def book(book_id):
     if book is None:
         return render_template("error.html", message="No such Book.")
 
-    return render_template("book.html", book=book)
+    if ("user_id" in session):
+        user = User.query.get(session["user_id"])
+
+    return render_template("book.html", book=book, user=user)
 
 @app.route("/search", methods=["POST"])
 def search():
     search = request.form.get("search")
     books = Book.query.filter(or_(Book.isbn.ilike("%" + search +"%"), Book.title.ilike("%" + search +"%"), Book.author.ilike("%" + search +"%"))).all()
-    return render_template("books.html", books=books)
+    if ("user_id" in session):
+        user = User.query.get(session["user_id"])
+    return render_template("books.html", books=books, user=user)
+
+@app.route("/review/<int:book_id>", methods=["POST"])
+def review(book_id):
+    content = request.form.get("review")
+    try:
+        rating = int(request.form.get("rating"))
+    except ValueError:
+        return render_template("error.html", message="This is not a valid rating")
+    review = Review(book_id=book_id, content=content, rating=rating, user_id=session["user_id"])
+    db.session.add(review)
+    db.session.commit()
+    user = User.query.get(session["user_id"])
+    return render_template("user.html", user=user)

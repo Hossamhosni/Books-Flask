@@ -7,4 +7,41 @@
 {% block body %}
   <h1>{{ book.title }}</h1>
 	<h2>By {{ book.author }}</h2>
+  <form action="{{ url_for('review', book_id=book.id) }}" method="post">
+    <div class="form-group">
+      <label for="review">Write review:</label>
+      <textarea class="form-control" rows="5" id="review" name="review"></textarea>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="rating" id="1star" value="1" checked>
+      <label class="form-check-label" for="1star">
+        1 Star
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="rating" id="2star" value="2">
+      <label class="form-check-label" for="2star">
+        2 Stars
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="rating" id="3star" value="3">
+      <label class="form-check-label" for="3star">
+        3 Stars
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="rating" id="4star" value="4">
+      <label class="form-check-label" for="4star">
+        4 Stars
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="rating" id="5star" value="5">
+      <label class="form-check-label" for="5star">
+        5 Stars
+      </label>
+    </div>
+    <button type="submit" class="btn btn-secondary" id='submitreview'>Submit review</button>
+  </form>
 {% endblock %}
