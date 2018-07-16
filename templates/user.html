@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Books App
+{% endblock %}
+
+{% block body %}
+  <h1>Welcome, {{ name }}</h1>
+	<form class="form-control" action="search" method="post">
+    <div class="form-group">
+      <input type="text" class="form-control form-control-sm" name="search" placeholder="Title, Author, ISBN">
+    </div>
+    <button type="submit" class="btn btn-secondary" id='searchbutton'>Search</button>
+  </form>
+{% endblock %}
