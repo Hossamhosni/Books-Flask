@@ -1,0 +1,22 @@
+body {
+	font-family: 'Slabo 27px', serif;
+	background-color: #F7F6F1;
+}
+.form-inline {
+	width: 20%;
+}
+.row {
+	margin: 10px;
+}
+
+.navbar {
+	background-color: #F7F6F1;
+}
+
+.jumbotron {
+	background-color: #F7F6F1;
+}
+
+#signinbutton {
+	float: right;
+}
