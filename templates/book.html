@@ -7,6 +7,8 @@
 {% block body %}
   <h1>{{ book.title }}</h1>
 	<h2>By {{ book.author }}</h2>
+  <h6>Goodreads Review Count: {{goodreads.reviews_count}}</h6>
+  <h6>Goodreads Average Rating: {{goodreads.average_rating}}</h6>
   <form action="{{ url_for('review', book_id=book.id) }}" method="post">
     <div class="form-group">
       <label for="review">Write review:</label>

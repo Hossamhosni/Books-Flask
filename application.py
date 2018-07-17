@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import Flask, session, render_template, request, redirect, jsonify
 from flask_session import Session
@@ -79,13 +80,16 @@ def book(book_id):
 
     # Make sure book exists.
     book = Book.query.get(book_id)
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv("KEY"), "isbns": book.isbn})
+    goodreads = res.json()
+
     if book is None:
         return render_template("error.html", message="No such Book.")
 
     if ("user_id" in session):
         user = User.query.get(session["user_id"])
 
-    return render_template("book.html", book=book, user=user)
+    return render_template("book.html", book=book, user=user, goodreads=goodreads['books'][0])
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -97,6 +101,9 @@ def search():
 
 @app.route("/review/<int:book_id>", methods=["POST"])
 def review(book_id):
+    review = Review.query.filter_by(book_id=book_id, user_id=session["user_id"]).all()
+    if (review):
+        return render_template("error.html", message="You can't submit two reviews for the same book", user=User.query.get(session["user_id"]))
     content = request.form.get("review")
     try:
         rating = int(request.form.get("rating"))
