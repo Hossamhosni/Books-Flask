@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session, render_template, request, redirect
+from flask import Flask, session, render_template, request, redirect, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -107,3 +107,21 @@ def review(book_id):
     db.session.commit()
     user = User.query.get(session["user_id"])
     return render_template("user.html", user=user)
+
+#Api routes
+
+@app.route("/api/<string:isbn>")
+def apiBook(isbn):
+    books = Book.query.filter_by(isbn=isbn).all()
+    if (books):
+        book = books[0]
+        review_count = Review.query.filter_by(book_id=book.id).count()
+        reviews = Review.query.filter_by(book_id=book.id).all()
+        sumreviews = sum(review.rating for review in reviews)
+        try:
+            average_score = sumreviews/review_count
+        except ZeroDivisionError:
+            average_score = 0
+        return jsonify(title=book.title, author=book.author, year=book.year, isbn=book.isbn, review_count=review_count, average_score=average_score)
+    else:
+        return jsonify(error="No matching isbn found")
