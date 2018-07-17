@@ -1,7 +1,7 @@
 import os
 import requests
 
-from flask import Flask, session, render_template, request, redirect, jsonify
+from flask import Flask, session, render_template, request, redirect, jsonify, url_for
 from flask_session import Session
 from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -30,7 +30,8 @@ db.init_app(app)
 def index():
     if ("user_id" in session):
         user = User.query.get(session["user_id"])
-        return render_template("user.html", user=user)
+        reviews = Review.query.filter_by(user_id=session["user_id"]).all()
+        return render_template("user.html", user=user, reviews=reviews)
     return render_template("index.html")
 
 @app.route("/signup", methods=["POST"])
@@ -63,7 +64,8 @@ def signin():
         user = users[0]
         if (user.password == password):
             session["user_id"] = user.id
-            return render_template("user.html", user=user)
+            reviews = user.reviews
+            return render_template("user.html", user=user, reviews=reviews)
         else:
             return render_template("error.html", message= "Authentication Error Invalid Password")
     else:
@@ -88,7 +90,6 @@ def book(book_id):
 
     if ("user_id" in session):
         user = User.query.get(session["user_id"])
-
     return render_template("book.html", book=book, user=user, goodreads=goodreads['books'][0])
 
 @app.route("/search", methods=["POST"])
@@ -113,7 +114,7 @@ def review(book_id):
     db.session.add(review)
     db.session.commit()
     user = User.query.get(session["user_id"])
-    return render_template("user.html", user=user)
+    return redirect(url_for("index"), code=200)
 
 #Api routes
 

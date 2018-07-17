@@ -8,11 +8,11 @@
 <h1>Search Results</h1>
   <ul>
 		{% for book in books %}
-            <li>
-                <a href="{{ url_for('book', book_id=book.id) }}">
-                    {{ book.title }} By {{ book.author }}
-                </a>
-            </li>
-        {% endfor %}
+        <li>
+            <a href="{{ url_for('book', book_id=book.id) }}">
+                {{ book.title }} By {{ book.author }}
+            </a>
+        </li>
+    {% endfor %}
   </ul>
 {% endblock %}

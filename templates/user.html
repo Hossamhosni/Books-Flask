@@ -5,6 +5,16 @@
 {% endblock %}
 
 {% block body %}
+  <div class="reviews">
+    <h2>My Reviews</h2>
+    <ul>
+  		{% for review in user.reviews %}
+          <li>
+              <a href="{{ url_for('book', book_id=review.book.id) }}">{{review.book.title}}</a> Review: {{ review.content }}
+          </li>
+      {% endfor %}
+    </ul>
+  </div>
 	<form class="form-control" action="search" method="post">
     <div class="form-group">
       <input type="text" class="form-control form-control-sm" name="search" placeholder="Title, Author, ISBN">

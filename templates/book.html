@@ -9,6 +9,18 @@
 	<h2>By {{ book.author }}</h2>
   <h6>Goodreads Review Count: {{goodreads.reviews_count}}</h6>
   <h6>Goodreads Average Rating: {{goodreads.average_rating}}</h6>
+  {% if book.reviews %}
+  <div class="reviews">
+    <h2>Reviews</h2>
+    <ul>
+  		{% for review in book.reviews %}
+          <li>
+              {{review.user.name}}: {{ review.content }} - {{ review.rating }} Stars
+          </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
   <form action="{{ url_for('review', book_id=book.id) }}" method="post">
     <div class="form-group">
       <label for="review">Write review:</label>
